@@ -70,11 +70,15 @@ def get_base_url_from_model_name(model_name: str) -> str:
 
 class RITSCompletionsHandler(BaseHandler):
     def __init__(self, model_name, temperature) -> None:
-        model_name = "meta-llama/Llama-3.1-8B-Instruct"
+        model_name = os.environ.get("RITS_MODEL_NAME")
+        if model_name is None:
+            raise RuntimeError("RITS_MODEL_NAME environment variable not set")
         super().__init__(model_name, temperature)
-        self.rits_model_name = "meta-llama/Llama-3.1-8B-Instruct"
+        self.rits_model_name = model_name
         self.model_style = ModelStyle.RIS_Completions
-        api_key = "4a642e57eb1270a64e62a01571abae8c"
+        api_key = os.environ.get("RITS_API_KEY")
+        if api_key is None:
+            raise RuntimeError("RITS_API_KEY environment variable not set")
         base_url = get_base_url_from_model_name(self.rits_model_name) + "/v1"
         headers = {"RITS_API_KEY": api_key}
 

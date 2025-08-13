@@ -1,4 +1,5 @@
 import argparse
+import os
 
 from bfcl_eval.constants.category_mapping import (
     TEST_COLLECTION_MAPPING,
@@ -493,6 +494,10 @@ def main(model, test_categories, result_dir, score_dir):
         for model_name in model:
             if model_name not in MODEL_CONFIG_MAPPING:
                 raise ValueError(f"Invalid model name '{model_name}'.")
+            if model_name == "ibm-rits":
+                model_name = os.environ.get("RITS_MODEL_NAME")
+                if model_name is None:
+                    raise RuntimeError("RITS_MODEL_NAME environment variable not set")
             # Runner takes in the model name that contains "_", instead of "/", for the sake of file path issues.
             # This is differnet than the model name format that the generation script "openfunctions_evaluation.py" takes in (where the name contains "/").
             # We patch it here to avoid confusing the user.
@@ -539,6 +544,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     load_dotenv(dotenv_path=DOTENV_PATH, verbose=True, override=True)  # Load the .env file
+
     main(
         args.model,
         args.test_category,
