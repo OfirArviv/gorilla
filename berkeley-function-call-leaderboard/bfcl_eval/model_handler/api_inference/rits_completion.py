@@ -88,6 +88,14 @@ class RITSCompletionsHandler(BaseHandler):
             default_headers=headers,
         )
 
+        is_fc_model = os.environ.get("RITS_IS_FC_MODEL")
+        if is_fc_model == "True":
+            self.is_fc_model = True
+        elif is_fc_model is None:
+            self.is_fc_model = False
+        else:
+            raise RuntimeError(f"RITS_IS_FC_MODEL got a value which is not 'True': {is_fc_model}. This is only"
+                               f" acceptable value. If it's not an FC model, omit the flag, the default is False.")
     def decode_ast(self, result, language="Python"):
         if "FC" in self.rits_model_name or self.is_fc_model:
             decoded_output = []
