@@ -70,11 +70,12 @@ def get_base_url_from_model_name(model_name: str) -> str:
 
 class RITSCompletionsHandler(BaseHandler):
     def __init__(self, model_name, temperature) -> None:
+        model_name = "meta-llama/Llama-3.1-8B-Instruct"
         super().__init__(model_name, temperature)
-        self.model_style = ModelStyle.OpenAI_Completions
-        api_key = "b523a017c47f478994041b512127b46f"
-        model_name = "openai/gpt-oss-20b"
-        base_url = get_base_url_from_model_name(model_name) + "/v1"
+        self.rits_model_name = "meta-llama/Llama-3.1-8B-Instruct"
+        self.model_style = ModelStyle.RIS_Completions
+        api_key = "4a642e57eb1270a64e62a01571abae8c"
+        base_url = get_base_url_from_model_name(self.rits_model_name) + "/v1"
         headers = {"RITS_API_KEY": api_key}
 
         self.client =  OpenAI(
@@ -84,7 +85,7 @@ class RITSCompletionsHandler(BaseHandler):
         )
 
     def decode_ast(self, result, language="Python"):
-        if "FC" in self.model_name or self.is_fc_model:
+        if "FC" in self.rits_model_name or self.is_fc_model:
             decoded_output = []
             for invoked_function in result:
                 name = list(invoked_function.keys())[0]
@@ -95,7 +96,7 @@ class RITSCompletionsHandler(BaseHandler):
             return default_decode_ast_prompting(result, language)
 
     def decode_execute(self, result):
-        if "FC" in self.model_name or self.is_fc_model:
+        if "FC" in self.rits_model_name or self.is_fc_model:
             return convert_to_function_call(result)
         else:
             return default_decode_execute_prompting(result)
@@ -117,7 +118,7 @@ class RITSCompletionsHandler(BaseHandler):
 
         kwargs = {
             "messages": message,
-            "model": self.model_name.replace("-FC", ""),
+            "model": self.rits_model_name.replace("-FC", ""),
             "temperature": self.temperature,
             "store": False,
         }
@@ -256,7 +257,7 @@ class RITSCompletionsHandler(BaseHandler):
 
         return self.generate_with_backoff(
             messages=inference_data["message"],
-            model=self.model_name,
+            model=self.rits_model_name,
             temperature=self.temperature,
             store=False,
         )
