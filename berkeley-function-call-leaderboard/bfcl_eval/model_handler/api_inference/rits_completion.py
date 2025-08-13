@@ -59,9 +59,9 @@ def get_model_name_for_endpoint(model_name: str):
     )
 
 def get_base_url_from_model_name(model_name: str) -> str:
-    base_url_template = (
-        "https://inference-3scale-apicast-production.apps.rits.fmaas.res.ibm.com/{}"
-    )
+    rits_endpoint = os.environ.get("RITS_ENDPOINT",
+                                   "https://inference-3scale-apicast-production.apps.rits.fmaas.res.ibm.com")
+    base_url_template = rits_endpoint + "/{}"
     return base_url_template.format(get_model_name_for_endpoint(model_name))
 
 
