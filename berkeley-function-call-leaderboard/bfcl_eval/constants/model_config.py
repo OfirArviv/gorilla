@@ -20,6 +20,7 @@ from bfcl_eval.model_handler.api_inference.nexus import NexusHandler
 from bfcl_eval.model_handler.api_inference.nova import NovaHandler
 from bfcl_eval.model_handler.api_inference.novita import NovitaHandler
 from bfcl_eval.model_handler.api_inference.nvidia import NvidiaHandler
+from bfcl_eval.model_handler.api_inference.rits_completion import RITSCompletionsHandler
 from bfcl_eval.model_handler.api_inference.openai_completion import (
     OpenAICompletionsHandler,
 )
@@ -119,6 +120,18 @@ class ModelConfig:
 
 # Inference through API calls
 api_inference_model_map = {
+    "ibm-rits": ModelConfig(
+        model_name="ibm-rits",
+        display_name="ibm-rits",
+        url="",
+        org="IBM",
+        license="Proprietary",
+        model_handler=RITSCompletionsHandler,
+        input_price=75,
+        output_price=150,
+        is_fc_model=False,
+        underscore_to_dot=False,
+    ),
     "gorilla-openfunctions-v2": ModelConfig(
         model_name="gorilla-openfunctions-v2",
         display_name="Gorilla-OpenFunctions-v2 (FC)",
